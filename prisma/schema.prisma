@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String?   @unique
+  password     String?
+  walletAddress String?  @unique
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  nfts         NFT[]
+  notifications Notification[]
+  messages     Message[]
+  profile      Profile?
+
+  Sale Sale[]
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  bio         String?
+  avatar      String?
+  banner      String?
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @unique
+}
+
+model NFT {
+  id          String   @id @default(uuid())
+  name        String
+  image       String
+  logo        String?
+  description String?
+  price       Float
+  creator     User     @relation(fields: [creatorId], references: [id])
+  creatorId   String
+  collections Collection[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  sales       Sale[]
+}
+
+model Collection {
+  id            String   @id @default(uuid())
+  name          String
+  price         Float
+  resaleProfit  Float
+  chartAmount   Float
+  image         String
+  creatorContract String
+  owner         String
+  chain         String?
+  timezone      String?
+  nft           NFT      @relation(fields: [nftId], references: [id])
+  nftId         String
+  tokenId       String?
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  nft       NFT      @relation(fields: [nftId], references: [id])
+  nftId     String
+  buyer     User     @relation(fields: [buyerId], references: [id])
+  buyerId   String
+  price     Float
+  soldAt    DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Yield {
+  id           String   @id @default(uuid())
+  image        String
+  imageLg      String
+  title        String
+  amountRange  String
+  chartPercent String
+  income       String
+  fee          String
+  level        String
+  days         String
+}
+
+
+
