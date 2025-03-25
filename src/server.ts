@@ -47,10 +47,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 const PORT = process.env.PORT || 5000;
 
-app.get("/",(req,res)=>{
-  console.log("App currently running")
-})
-
 const startServer = async () => {
   try {
     await prisma.$connect();
