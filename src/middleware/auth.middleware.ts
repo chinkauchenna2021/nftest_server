@@ -9,12 +9,12 @@ import { Role } from '@prisma/client';
 
 interface UserPayload {
    id: string; 
-   email?: string | null; 
-   password?: string | null; 
-   walletAddress?: string | null; 
+   email: string | null; 
+   password: string | null; 
+   walletAddress: string | null; 
    role: Role; 
-   createdAt?: Date; 
-   updatedAt?: Date; 
+   createdAt: Date; 
+   updatedAt: Date; 
 }
 
 declare global {
@@ -59,7 +59,7 @@ export const authenticateToken = asyncMiddleware(
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
       const user = await prisma.user.findUnique({
         where: { id: decoded.id },
-        select: { id: true, role: true }
+        select: { id: true, role: true , password: true, email:true, walletAddress: true,createdAt: true,updatedAt: true }
       });
 
       if (!user) {
