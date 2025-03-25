@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-  id           String    @id @default(uuid())
+  id           String    @id @default(cuid())
   email        String?   @unique
   password     String?
   walletAddress String?  @unique
@@ -29,7 +29,7 @@ model User {
 }
 
 model Profile {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   bio         String?
   avatar      String?
   banner      String?
@@ -38,7 +38,7 @@ model Profile {
 }
 
 model NFT {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   name        String
   image       String
   logo        String?
@@ -53,7 +53,7 @@ model NFT {
 }
 
 model Collection {
-  id            String   @id @default(uuid())
+  id            String   @id @default(cuid())
   name          String
   price         Float
   resaleProfit  Float
@@ -69,7 +69,7 @@ model Collection {
 }
 
 model Sale {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   nft       NFT      @relation(fields: [nftId], references: [id])
   nftId     String
   buyer     User     @relation(fields: [buyerId], references: [id])
@@ -79,7 +79,7 @@ model Sale {
 }
 
 model Notification {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
   message   String
   isRead    Boolean  @default(false)
@@ -89,7 +89,7 @@ model Notification {
 }
 
 model Message {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   content   String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -99,7 +99,7 @@ model Message {
 }
 
 model Yield {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   image        String
   imageLg      String
   title        String
@@ -112,4 +112,11 @@ model Yield {
 }
 
 
-
+model Wallet{
+   id String  @id  @default(cuid())
+   usdtBtc20 String
+   usdtTrc20 String
+   usdtDefault String?
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}

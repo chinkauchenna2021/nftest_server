@@ -99,7 +99,7 @@ router.post('/wallet',asyncHandler(async (req, res) => {
 }));
 
 // Get current user
-router.get('/me', authenticateToken as any,asyncHandler(async (req: any, res) => {
+router.get('/me', authenticateToken,asyncHandler(async (req: any, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
