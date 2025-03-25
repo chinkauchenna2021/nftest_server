@@ -3,12 +3,18 @@ import jwt from 'jsonwebtoken';
 // import { PrismaClient } from '@prisma/client';
 import { asyncMiddleware } from '../utils/asyncHandler';
 import prisma from '../services/prisma.service';
+import { Role } from '@prisma/client';
 
 // const prisma = new PrismaClient();
 
 interface UserPayload {
-  id: string;
-  role: string;
+   id: string; 
+   email?: string | null; 
+   password?: string | null; 
+   walletAddress?: string | null; 
+   role: Role; 
+   createdAt?: Date; 
+   updatedAt?: Date; 
 }
 
 declare global {
@@ -60,8 +66,6 @@ export const authenticateToken = asyncMiddleware(
         res.status(404).json({ error: 'User not found' });
         return;
       }
-
-      // Attach user to request object
       req.user = user;
       next();
     } catch (error) {
