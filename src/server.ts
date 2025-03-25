@@ -10,6 +10,7 @@ import adminRoutes from './routes/admin.routes';
 import notificationRoutes from './routes/notification.routes';
 import messageRoutes from './routes/message.routes';
 import yieldRoutes from './routes/yield.routes';
+import walletRoutes from './routes/wallet.routes'
 
 dotenv.config();
 
@@ -30,6 +31,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/yield', yieldRoutes);
+app.use("/wallet",walletRoutes)
+
 
 // Health check
 app.get('/api/health', (req, res) => {
