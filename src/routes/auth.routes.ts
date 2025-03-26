@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { ethers } from 'ethers';
 import { authenticateToken, generateToken } from '../middleware/auth.middleware';
 import { asyncHandler } from '../utils/asyncHandler';
+import { generateServerNonce } from '../hook/generateNounce';
 
 const router:Router = express.Router();
 const prisma = new PrismaClient();
@@ -67,14 +68,15 @@ router.post('/login',asyncHandler(async (req, res) => {
 // Wallet Login/Signup
 router.post('/wallet',asyncHandler(async (req, res) => {
   try {
-    const { walletAddress, signature, message } = req.body;
+    const { walletAddress, signature , nonce  } = req.body;
+    const message = `Welcome to My DApp!\n\nSign this message to authenticate.\n\nNonce: ${nonce}`
 
     if (!walletAddress || !signature || !message) {
       return res.status(400).json({ error: 'Wallet address, signature, and message are required' });
     }
 
     // Verify the signature
-    const signer =ethers.verifyMessage(message, signature);
+    const signer = ethers.verifyMessage(message, signature);
     if (signer.toLowerCase() !== walletAddress.toLowerCase()) {
       return res.status(401).json({ error: 'Invalid signature' });
     }
@@ -120,6 +122,20 @@ router.get('/me', authenticateToken,asyncHandler(async (req: any, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error fetching user' });
+  }
+}));
+
+
+
+// Get current nounce
+router.get('/nonce', authenticateToken,asyncHandler(async (req: any, res) => {
+  try {
+    const nonce = generateServerNonce();
+    const expiration = Date.now() + 15 * 60 * 1000; 
+    res.json({ nonce, expiration});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error fetching nonce' });
   }
 }));
 
